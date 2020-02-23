@@ -5,7 +5,7 @@ import bpy
 class Box(BaseMesh):
     OBJTYPE = 'box'
 
-    def __init__(self, width=1, length=None, height=None, **kwargs):
+    def __init__(self, width=1, length=None, height=None,  **kwargs):
         self.width = width
         self.height = height or width
         self.length = length or width

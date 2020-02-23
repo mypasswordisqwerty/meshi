@@ -5,7 +5,7 @@ import bpy
 class Sphere(BaseMesh):
     OBJTYPE = 'sphere'
 
-    def __init__(self, radius=1, segments=32, rings=16, **kwargs):
+    def __init__(self, radius=0.5, segments=32, rings=16, **kwargs):
         self.radius = radius
         self.segments = segments
         self.rings = rings
@@ -17,7 +17,7 @@ class Sphere(BaseMesh):
 
 class ISphere(Sphere):
 
-    def __init__(self, radius=1, subdivisions=2, **kwargs):
+    def __init__(self, radius=0.5, subdivisions=2, **kwargs):
         Sphere.__init__(self, radius, subdivisions, 0, **kwargs)
 
     def build(self):

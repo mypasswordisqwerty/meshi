@@ -1,7 +1,7 @@
 from .lib import *
-from .parts import *
+from .parts import wall, connector
 
-__version__ = "0.1"
+__version__ = "0.1.1"
 
 
 def reload():
