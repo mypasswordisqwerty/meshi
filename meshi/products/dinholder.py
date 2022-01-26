@@ -1,0 +1,4 @@
+
+
+class DinHolder(BaseProduct):
+    pass

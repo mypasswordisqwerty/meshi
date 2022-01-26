@@ -1,4 +1,4 @@
-from meshi.parts.base import BasePart
+from meshi.lib import BasePart
 from meshi.lib import *
 
 

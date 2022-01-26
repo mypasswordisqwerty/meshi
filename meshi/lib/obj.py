@@ -2,42 +2,42 @@ import bpy
 import math
 
 
-class BaseMesh:
-    OBJTYPE = 'mesh'
+class Object3D:
+    OBJTYPE = 'object'
 
     def __init__(self, **kwargs):
-        self.name = kwargs.get('name', self.generateName())
+        self.kwargs = kwargs
+        self.name = kwargs.get('name', self.generate_name())
         self.obj = kwargs.get('obj')
         if not self.obj:
             self.build()
-        self.obj = bpy.context.object
-        self.update()
-        self.setColor(kwargs.get('color', self.generateColor()))
+        self.obj = self._get_object()
+        self._update()
         self.obj.name = self.name
         if 'at' in kwargs:
             self.move(kwargs['at'])
         if 'rot' in kwargs:
             self.rotate(kwargs['rot'])
 
-    def generateName(self):
+    def _get_object(self):
+        return bpy.context.object
+
+    def _is_group(self):
+        return False
+
+    def _update(self):
+        self.update()
+
+    def generate_name(self):
         oid = 1
         while (self.OBJTYPE+str(oid)) in bpy.data.objects:
             oid += 1
         return self.OBJTYPE + str(oid)
 
-    def generateColor(self):
-        return [1.0, 0, 0]
-
-    def setColor(self, c):
-        col = [x for x in c]
-        while len(col) < 4:
-            col += [1.0]
-        self.obj.color = col
-
     def clone(self, name=None, **kwargs):
         self.select()
         bpy.ops.object.duplicate(linked=0, mode='TRANSLATION')
-        return BaseMesh(name=name, obj=True, **kwargs)
+        return Object3D(name=name, obj=True, **kwargs)
 
     def rename(self, name):
         self.name = name
@@ -59,7 +59,13 @@ class BaseMesh:
             res[2] = z
         return res
 
+    def unselect_all(self):
+        for obj in bpy.context.selected_objects:
+            obj.select_set(False)
+        bpy.context.view_layer.objects.active = None
+
     def select(self):
+        self.unselect_all()
         self.obj.select_set(True)
         bpy.context.view_layer.objects.active = self.obj
         return self
@@ -91,58 +97,4 @@ class BaseMesh:
     def scale(self, xyz=(0, 0, 0), x=None, y=None, z=None):
         self.select()
         bpy.ops.transform.resize(value=self.getVector(xyz, x, y, z))
-        return self
-
-    def delete(self):
-        bpy.data.meshes.remove(self.obj.data)
-        # bpy.data.objects.remove(self.obj)
-        self.obj = None
-
-    def modifier(self, mtype, name=None):
-        self.select()
-        return self.obj.modifiers.new(name=name or mtype+self.name, type=mtype)
-
-    def apply(self, modifier):
-        self.select()
-        return bpy.ops.object.modifier_apply(apply_as='DATA', modifier=modifier.name)
-
-    def boolAt(self, other, at, op, keep=False):
-        for x in at:
-            if x is not None:
-                other.moveTo(x)
-            self.select()
-            mod = self.modifier('BOOLEAN')
-            mod.object = other.obj
-            mod.operation = op
-            self.apply(mod)
-        if not keep:
-            other.delete()
-        return self
-
-    def substractAt(self, other, at, keep=False):
-        return self.boolAt(other, at, 'DIFFERENCE', keep)
-
-    def substract(self, other, keep=False):
-        return self.substractAt(other, [None], keep)
-
-    def substractFrom(self, other, keep=False):
-        other.substract(self, keep)
-        return self
-
-    def substractFromAt(self, other, at, keep=False):
-        other.substractAt(self, at, keep)
-        return self
-
-    def addAt(self, other, at, keep=False):
-        return self.boolAt(other, at, 'UNION', keep)
-
-    def add(self, other, keep=False):
-        return self.addAt(other, [None], keep)
-
-    def addTo(self, other, keep=False):
-        other.add(self, keep)
-        return self
-
-    def addToAt(self, other, at, keep=False):
-        other.addAt(self, at, keep)
         return self

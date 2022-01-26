@@ -1,6 +1,9 @@
+from meshi.lib import BasePart
 
 
-class Connector(BasePart):
+class Pin(BasePart):
+    OBJTYPE = "pin"
+
     def __init__(self, radius=3, length=10, cradius=1, clength=5, vertices=8):
         BasePart.__init__(self)
         self.radius = radius
@@ -10,11 +13,15 @@ class Connector(BasePart):
         self.vertices = vertices
 
 
-class MConnector(Connector):
+class MPin(Pin):
+    OBJTYPE = "mpin"
+
     def __init__(self, radius=3, length=10, cradius=1, clength=5, vertices=8):
         pass
 
 
-class FConnector(Connector):
+class FPin(Pin):
+    OBJTYPE = "fpin"
+
     def __init__(self, radius=3, length=10, cradius=1, clength=5, vertices=8):
         pass

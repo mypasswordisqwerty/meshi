@@ -1,4 +1,4 @@
-from meshi.lib.mesh.base import BaseMesh
+from .mesh import BaseMesh
 import bpy
 
 
