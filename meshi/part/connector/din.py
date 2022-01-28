@@ -1,7 +1,7 @@
 from meshi.lib import BasePart
 
 
-class DinConnector:
+class Din(BasePart):
     OBJTYPE = 'din_connector'
 
     def update(self):
