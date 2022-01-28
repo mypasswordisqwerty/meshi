@@ -5,10 +5,10 @@ init()
 d = Box(20)
 
 # round corners
-c = Sphere(20).substract(Sphere(14))
+c = Sphere(40).substract(Sphere(28))
 d.substract(c)
 
-Sphere(2).substractFromAt(d, [
+Sphere(4).substractFromAt(d, [
     # one two
     {'z': -9}, [9, -4, -4], [9, 4, 4],
     # three

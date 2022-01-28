@@ -5,9 +5,9 @@ import bpy
 class Cone(BaseMesh):
     OBJTYPE = 'cone'
 
-    def __init__(self, radius1=1.0, radius2=0.0, height=1, diameter1=None, diameter2=None, vertices=32, **kwargs):
-        self.radius1 = diameter1/2 if diameter1 else radius1
-        self.radius2 = diameter2/2 if diameter2 else radius2
+    def __init__(self, diameter1=2.0, diameter2=0, height=1, radius1=None, radius2=None, vertices=32, **kwargs):
+        self.radius1 = radius1 or diameter1/2
+        self.radius2 = radius2 or diameter2/2
         self.height = height
         self.vertices = vertices
         BaseMesh.__init__(self, **kwargs)

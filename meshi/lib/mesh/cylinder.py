@@ -5,8 +5,8 @@ import bpy
 class Cylinder(BaseMesh):
     OBJTYPE = 'cylinder'
 
-    def __init__(self, radius=0.5, height=1, vertices=32, diameter=None, **kwargs):
-        self.radius = diameter/2 if diameter else radius
+    def __init__(self, diameter=1, height=1, vertices=32, radius=None, **kwargs):
+        self.radius = radius or diameter/2
         self.height = height
         self.vertices = vertices
         BaseMesh.__init__(self, **kwargs)

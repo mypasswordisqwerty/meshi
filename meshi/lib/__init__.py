@@ -4,6 +4,7 @@ from .base import BaseMesh, BasePart, BaseProduct
 from .mesh.box import Box
 from .mesh.sphere import Sphere, ISphere
 from .mesh.cylinder import Cylinder
+from .mesh.cone import Cone
 import bpy
 
 

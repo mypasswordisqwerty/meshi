@@ -1,4 +1,4 @@
-from meshi.lib import BaseProduct, Group, Box, Sphere
+from meshi.lib import BaseProduct, Group, Box, Sphere, Cone
 from meshi.part.connector import FPin
 import bpy
 import os
@@ -21,14 +21,15 @@ class SimpleBox(BaseProduct):
             pos = []
             cfg = self.kwargs.get("pins", {})
             ofs = cfg.get("offset", 10)
-            conf = {'radius': cfg.get('radius', 3), 'height': cfg.get('height', self.height)}
-            xofs = self.width/2 - conf['radius'] - self.box_thick + 1
-            yofs = self.length/2 - conf['radius'] - ofs
+            conf = {'diameter': cfg.get('diameter', 3), 'cdiameter': cfg.get('cdiameter', 1),
+                    'height': cfg.get('height', self.height), 'bevel': True}
+            xofs = self.width/2 - conf['diameter']/2 - self.box_thick + 0.5
+            yofs = self.length/2 - conf['diameter']/2 - ofs
             zofs = conf['height']/2 - self.height/2
-            pos.append((xofs, yofs, zofs))
-            pos.append((-xofs, yofs, zofs))
-            pos.append((xofs, -yofs, zofs))
-            pos.append((-xofs, -yofs, zofs))
+            pos.append(((xofs, yofs, zofs), {'x': 180}))
+            pos.append(((-xofs, yofs, zofs), {'x': 180, 'z': 180}))
+            pos.append(((xofs, -yofs, zofs), {'x': 180}))
+            pos.append(((-xofs, -yofs, zofs), {'x': 180, 'z': 180}))
             self.pins = {'pos': pos, 'conf': conf}
         return self.pins
 
@@ -42,7 +43,7 @@ class SimpleBox(BaseProduct):
                    at={'x': self.width/2-self.top_thick/2})
         pins = []
         for x in self.pin_config()['pos']:
-            pins.append(FPin(**self.pin_config()['conf'], at=x, rot={'x': 180}))
+            pins.append(FPin(**self.pin_config()['conf'], at=x[0], rot=x[1]))
         self.top.add([left, top, right] + pins)
 
     def create_front(self):
@@ -65,7 +66,12 @@ class SimpleBox(BaseProduct):
 
     def create_bottom(self):
         self.bottom_thick = self.kwargs.get("bottom_thick", self.box_thick)
-        self.bottom.add(Box(self.width, self.length, self.bottom_thick, name="panel"))
+        panel = Box(self.width, self.length, self.bottom_thick, name="panel")
+        pc = self.pin_config()
+        for x in pc['pos']:
+            Cone(pc['conf']['diameter'], pc['conf']['cdiameter'], self.bottom_thick,
+                 at={'x': x[0][0], 'y': x[0][1]}).substractFrom(panel)
+        self.bottom.add(panel)
         self.bottom.move(z=-self.height/2-self.bottom_thick/2)
 
     def update(self):
