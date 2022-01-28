@@ -7,7 +7,7 @@ class Object3D:
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs
-        self.name = kwargs.get('name', self.generate_name())
+        self.name = kwargs.get('name') or self.generate_name()
         self.obj = kwargs.get('obj')
         if not self.obj:
             self.build()

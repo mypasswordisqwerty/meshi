@@ -1,4 +1,7 @@
 from meshi.lib import BaseProduct, Group, Box, Sphere
+from meshi.part.connector import FPin
+import bpy
+import os
 
 
 class SimpleBox(BaseProduct):
@@ -10,7 +13,24 @@ class SimpleBox(BaseProduct):
         self.length = length
         self.panel_thick = panel_thick
         self.box_thick = box_thick or panel_thick
+        self.pins = None
         BaseProduct.__init__(self, **kwargs)
+
+    def pin_config(self):
+        if not self.pins:
+            pos = []
+            cfg = self.kwargs.get("pins", {})
+            ofs = cfg.get("offset", 10)
+            conf = {'radius': cfg.get('radius', 3), 'height': cfg.get('height', self.height)}
+            xofs = self.width/2 - conf['radius'] - self.box_thick + 1
+            yofs = self.length/2 - conf['radius'] - ofs
+            zofs = conf['height']/2 - self.height/2
+            pos.append((xofs, yofs, zofs))
+            pos.append((-xofs, yofs, zofs))
+            pos.append((xofs, -yofs, zofs))
+            pos.append((-xofs, -yofs, zofs))
+            self.pins = {'pos': pos, 'conf': conf}
+        return self.pins
 
     def create_top(self):
         self.top_thick = self.kwargs.get("top_thick", self.box_thick)
@@ -20,7 +40,10 @@ class SimpleBox(BaseProduct):
                     at={'x': -self.width/2+self.top_thick/2})
         left = Box(self.top_thick, self.length, self.height, name="left",
                    at={'x': self.width/2-self.top_thick/2})
-        self.top.add((left, top, right))
+        pins = []
+        for x in self.pin_config()['pos']:
+            pins.append(FPin(**self.pin_config()['conf'], at=x, rot={'x': 180}))
+        self.top.add([left, top, right] + pins)
 
     def create_front(self):
         self.front_thick = self.kwargs.get("front_thick", self.panel_thick)
@@ -55,3 +78,14 @@ class SimpleBox(BaseProduct):
         self.create_front()
         self.create_back()
         self.create_bottom()
+
+    def export(self, path):
+        path = os.path.expanduser(path)
+        self.top.select()
+        bpy.ops.export_mesh.stl(filepath=os.path.join(path, "top.stl"),  use_selection=True)
+        self.bottom.select()
+        bpy.ops.export_mesh.stl(filepath=os.path.join(path, "bottom.stl"),  use_selection=True)
+        self.front.select()
+        bpy.ops.export_mesh.stl(filepath=os.path.join(path, "front.stl"),  use_selection=True)
+        self.back.select()
+        bpy.ops.export_mesh.stl(filepath=os.path.join(path, "back.stl"),  use_selection=True)

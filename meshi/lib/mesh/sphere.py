@@ -5,8 +5,8 @@ import bpy
 class Sphere(BaseMesh):
     OBJTYPE = 'sphere'
 
-    def __init__(self, radius=0.5, segments=32, rings=16, **kwargs):
-        self.radius = radius
+    def __init__(self, radius=0.5, segments=32, rings=16, diameter=None, **kwargs):
+        self.radius = self.radius = diameter/2 if diameter else radius
         self.segments = segments
         self.rings = rings
         BaseMesh.__init__(self, **kwargs)
@@ -17,8 +17,8 @@ class Sphere(BaseMesh):
 
 class ISphere(Sphere):
 
-    def __init__(self, radius=0.5, subdivisions=2, **kwargs):
-        Sphere.__init__(self, radius, subdivisions, 0, **kwargs)
+    def __init__(self, radius=0.5, subdivisions=2, diameter=None, **kwargs):
+        Sphere.__init__(self, radius, subdivisions, 0, diameter, **kwargs)
 
     def build(self):
         bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=self.segments, radius=self.radius)

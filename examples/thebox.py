@@ -10,4 +10,4 @@ plateW = 1.5
 init()
 
 a = Box(w, l, h)
-Box(w-wallW, l-wallW, h).move(z=-plateW).substractFrom(a)
+Box(w-wallW, l-wallW, h).move(z=plateW).substractFrom(a)

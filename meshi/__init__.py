@@ -1,6 +1,6 @@
 from .lib import *
-from .parts import wall, connector
-from .products import *
+from .part import *
+from .product import *
 
 __version__ = "0.2.0"
 
