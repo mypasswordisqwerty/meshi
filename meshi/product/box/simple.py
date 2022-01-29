@@ -7,7 +7,7 @@ import os
 class SimpleBox(BaseProduct):
     OBJTYPE = 'simplebox'
 
-    def __init__(self, width, height, length, panel_thick=2, box_thick=None, **kwargs):
+    def __init__(self, width, height, length, panel_thick=3, box_thick=None, **kwargs):
         self.width = width
         self.height = height
         self.length = length
@@ -21,7 +21,7 @@ class SimpleBox(BaseProduct):
             pos = []
             cfg = self.kwargs.get("pins", {})
             ofs = cfg.get("offset", 10)
-            conf = {'diameter': cfg.get('diameter', 3), 'cdiameter': cfg.get('cdiameter', 1),
+            conf = {'diameter': cfg.get('diameter', 6), 'cdiameter': cfg.get('cdiameter', 2),
                     'height': cfg.get('height', self.height), 'bevel': True}
             xofs = self.width/2 - conf['diameter']/2 - self.box_thick + 0.5
             yofs = self.length/2 - conf['diameter']/2 - ofs
@@ -48,21 +48,23 @@ class SimpleBox(BaseProduct):
 
     def create_front(self):
         self.front_thick = self.kwargs.get("front_thick", self.panel_thick)
-        panel = Box(self.width-2, self.front_thick, self.height, name="panel",
-                    at={'y': -self.length/2+self.front_thick/2+1})
-        self.front.add(panel)
-        panel.substractFrom(self.top.top, keep=True)
-        panel.substractFrom(self.top.left, keep=True)
-        panel.substractFrom(self.top.right, keep=True)
+        self.front.add(Box(self.width-2, self.front_thick, self.height, name="panel",
+                           at={'y': -self.length/2+self.front_thick/2+1}))
+        hole = Box(self.width-2+0.2, self.front_thick+0.2, self.height+0.2,
+                   at={'y': -self.length/2+self.front_thick/2+1})
+        hole.substractFrom(self.top.top, keep=True)
+        hole.substractFrom(self.top.left, keep=True)
+        hole.substractFrom(self.top.right)
 
     def create_back(self):
         self.back_thick = self.kwargs.get("back_thick", self.panel_thick)
-        panel = Box(self.width-2, self.back_thick, self.height, name="panel",
-                    at={'y': self.length/2-self.back_thick/2-1})
-        self.back.add(panel)
-        panel.substractFrom(self.top.top, keep=True)
-        panel.substractFrom(self.top.left, keep=True)
-        panel.substractFrom(self.top.right, keep=True)
+        self.back.add(Box(self.width-2, self.back_thick, self.height, name="panel",
+                          at={'y': self.length/2-self.back_thick/2-1}))
+        hole = Box(self.width-2+0.2, self.back_thick+0.2, self.height+0.2,
+                   at={'y': self.length/2-self.back_thick/2-1})
+        hole.substractFrom(self.top.top, keep=True)
+        hole.substractFrom(self.top.left, keep=True)
+        hole.substractFrom(self.top.right)
 
     def create_bottom(self):
         self.bottom_thick = self.kwargs.get("bottom_thick", self.box_thick)
@@ -71,7 +73,12 @@ class SimpleBox(BaseProduct):
         for x in pc['pos']:
             Cone(pc['conf']['diameter'], pc['conf']['cdiameter'], self.bottom_thick,
                  at={'x': x[0][0], 'y': x[0][1]}).substractFrom(panel)
-        self.bottom.add(panel)
+        bpos = -self.length/2 + self.front_thick + 1 + self.bottom_thick/2
+        b1 = Box(self.width - 3*self.top_thick, self.bottom_thick, self.bottom_thick+2,
+                 at={'y': bpos, 'z': self.bottom_thick/2})
+        b2 = Box(self.width - 3*self.top_thick, self.bottom_thick, self.bottom_thick+2,
+                 at={'y': -bpos, 'z': self.bottom_thick/2})
+        self.bottom.add((panel, b1, b2))
         self.bottom.move(z=-self.height/2-self.bottom_thick/2)
 
     def update(self):
