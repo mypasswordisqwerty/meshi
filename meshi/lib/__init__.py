@@ -1,7 +1,7 @@
 from .obj import Object3D
 from .group import Group
 from .base import BaseMesh, BasePart, BaseProduct
-from .mesh.box import Box
+from .mesh.cube import Cube
 from .mesh.sphere import Sphere, ISphere
 from .mesh.cylinder import Cylinder
 from .mesh.cone import Cone

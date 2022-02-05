@@ -2,7 +2,7 @@ from meshi import *
 
 init()
 
-d = Box(20)
+d = Cube(20)
 
 # round corners
 c = Sphere(40).substract(Sphere(28))

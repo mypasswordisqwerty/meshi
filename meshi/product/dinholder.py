@@ -1,4 +1,4 @@
-from meshi.lib import BaseProduct, Box
+from meshi.lib import BaseProduct, Cube
 from meshi.part import connector, wall
 
 
@@ -19,9 +19,9 @@ class DinHolder(BaseProduct):
         pin_cdiameter = self.kwargs.get('pin_cdiameter', 2)
         pin_height = self.kwargs.get('pin_height', 5)
 
-        line1 = Box(self.full_width, pin_diameter, self.height, at={'y': self.pos[1]})
-        line2 = Box(self.full_width, pin_diameter, self.height, at={'y': -self.pos[1]})
-        line3 = Box(pin_diameter, self.length, self.height, at={'x': -self.full_width/2 + pin_diameter/2})
+        line1 = Cube(self.full_width, pin_diameter, self.height, at={'y': self.pos[1]})
+        line2 = Cube(self.full_width, pin_diameter, self.height, at={'y': -self.pos[1]})
+        line3 = Cube(pin_diameter, self.length, self.height, at={'x': -self.full_width/2 + pin_diameter/2})
         zpos = pin_height/2 + self.height/2
         pin1 = connector.FPin(pin_diameter, pin_height, pin_cdiameter,
                               pin_height, at=(self.pos[0], self.pos[1], zpos))

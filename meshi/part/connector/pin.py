@@ -1,4 +1,4 @@
-from meshi.lib import BasePart, Cylinder, Box
+from meshi.lib import BasePart, Cylinder, Cube
 
 
 class Pin(BasePart):
@@ -18,7 +18,7 @@ class Pin(BasePart):
 
     def add_bevel(self, pos):
         if self.bevel:
-            Box(self.diameter*3, rot={'y': 25 if pos > 0 else -25}, at={'z': pos}).substractFrom(self)
+            Cube(self.diameter*3, rot={'y': 25 if pos > 0 else -25}, at={'z': pos}).substractFrom(self)
 
 
 class MPin(Pin):

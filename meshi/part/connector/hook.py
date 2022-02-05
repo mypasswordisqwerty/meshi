@@ -1,4 +1,4 @@
-from meshi.lib import BasePart, Box
+from meshi.lib import BasePart, Cube
 
 
 class Hook(BasePart):
@@ -13,7 +13,7 @@ class Hook(BasePart):
         BasePart.__init__(self, **kwargs)
 
     def update(self):
-        self.add(Box(self.width, self.len_full, self.thick))
+        self.add(Cube(self.width, self.len_full, self.thick))
         len2 = self.len_full - self.len_hold
-        self.add(Box(self.width, len2, self.hook,
-                     at={'y': self.len_full/2 - len2/2, 'z': self.thick/2 - self.hook/2}))
+        self.add(Cube(self.width, len2, self.hook,
+                      at={'y': self.len_full/2 - len2/2, 'z': self.thick/2 - self.hook/2}))

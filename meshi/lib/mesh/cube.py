@@ -2,8 +2,8 @@ from ..base import BaseMesh
 import bpy
 
 
-class Box(BaseMesh):
-    OBJTYPE = 'box'
+class Cube(BaseMesh):
+    OBJTYPE = 'cube'
 
     def __init__(self, width=1, length=None, height=None,  **kwargs):
         self.width = width

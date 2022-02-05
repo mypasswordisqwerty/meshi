@@ -18,18 +18,18 @@ class Grid(BaseWall):
         at = [{'x': 0}]
         for i in range(1, cnt):
             at += [{'x': self.gspace*i}, {'x': -self.gspace*i}]
-        d = Box(self.gwidth, self.length*2, self.height-0.01, rot={"z": 45})
+        d = Cube(self.gwidth, self.length*2, self.height-0.01, rot={"z": 45})
         self.addAt(d, at)
-        d = Box(self.gwidth, self.length*2, self.height-0.05, rot={"z": -45})
+        d = Cube(self.gwidth, self.length*2, self.height-0.05, rot={"z": -45})
         self.addAt(d, at)
         # hole
-        hole = Box(self.width-self.border*2, self.length-self.border*2, self.height+1)
+        hole = Cube(self.width-self.border*2, self.length-self.border*2, self.height+1)
         mod = self.modifier('BOOLEAN')
         mod.object = hole.obj
         mod.operation = 'INTERSECT'
         self.apply(mod)
         # box
-        b = Box(self.width, self.length, self.height)
+        b = Cube(self.width, self.length, self.height)
         if self.bevel > 0:
             mod = b.modifier('BEVEL')
             mod.segments = self.bevel
