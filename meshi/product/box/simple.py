@@ -47,20 +47,20 @@ class SimpleBox(BaseProduct):
         self.top.add([left, top, right] + pins)
 
     def create_front(self):
-        self.front_thick = self.kwargs.get("front_thick", self.panel_thick)
+        self.front_thick = self.kwargs.get("front_thick", self.panel_thick-0.5)
         self.front.add(Cube(self.width-2, self.front_thick, self.height, name="panel",
                             at={'y': -self.length/2+self.front_thick/2+1}))
-        hole = Cube(self.width-2+0.2, self.front_thick+0.2, self.height+0.2,
+        hole = Cube(self.width-2+0.5, self.front_thick+0.5, self.height+0.5,
                     at={'y': -self.length/2+self.front_thick/2+1})
         hole.substractFrom(self.top.top, keep=True)
         hole.substractFrom(self.top.left, keep=True)
         hole.substractFrom(self.top.right)
 
     def create_back(self):
-        self.back_thick = self.kwargs.get("back_thick", self.panel_thick)
+        self.back_thick = self.kwargs.get("back_thick", self.panel_thick-0.5)
         self.back.add(Cube(self.width-2, self.back_thick, self.height, name="panel",
                            at={'y': self.length/2-self.back_thick/2-1}))
-        hole = Cube(self.width-2+0.2, self.back_thick+0.2, self.height+0.2,
+        hole = Cube(self.width-2+0.5, self.back_thick+0.5, self.height+0.5,
                     at={'y': self.length/2-self.back_thick/2-1})
         hole.substractFrom(self.top.top, keep=True)
         hole.substractFrom(self.top.left, keep=True)
@@ -71,7 +71,7 @@ class SimpleBox(BaseProduct):
         panel = Cube(self.width, self.length, self.bottom_thick, name="panel")
         pc = self.pin_config()
         for x in pc['pos']:
-            Cone(pc['conf']['diameter'], pc['conf']['cdiameter'], self.bottom_thick,
+            Cone(pc['conf']['diameter']/2, pc['conf']['cdiameter'], self.bottom_thick,
                  at={'x': x[0][0], 'y': x[0][1]}).substractFrom(panel)
         bpos = -self.length/2 + self.front_thick + 1 + self.bottom_thick/2
         b1 = Cube(self.width - 3*self.top_thick, self.bottom_thick, self.bottom_thick+2,
